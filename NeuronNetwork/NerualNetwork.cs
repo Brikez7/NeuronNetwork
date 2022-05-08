@@ -1,4 +1,4 @@
-﻿    
+﻿    //
 namespace NeuralNetworks
 {
     internal class NerualNetwork
