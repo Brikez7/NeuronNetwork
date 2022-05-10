@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace NeuralNetworks
+﻿namespace NeuralNetworks
 {
     public class NeuralNetwork
     {
-        public TopologeNetwork Topology { get; }
-        public List<Layer> Layers { get; }
+        public TopologyNetwork Topology { get; private set; }
+        public List<Layer> Layers { get; } = new List<Layer>();
 
-        public NeuralNetwork(TopologeNetwork topology)
+        public NeuralNetwork(TopologyNetwork topology)
         {
             Topology = topology;
-
-            Layers = new List<Layer>();
 
             CreateInputLayer();
             CreateHiddenLayers();
@@ -31,7 +25,7 @@ namespace NeuralNetworks
             }
             else
             {
-                return Layers.Last().Neurons.OrderByDescending(n => n.Output).First();
+                return Layers.Last().Neurons.OrderByDescending(n => n.Outputs).First();
             }
         }
 
@@ -53,7 +47,7 @@ namespace NeuralNetworks
 
         private double Backpropagation(double exprected, params double[] inputs)
         {
-            var actual = FeedForward(inputs).Output;
+            var actual = FeedForward(inputs).Outputs;
 
             var difference = actual - exprected;
 
@@ -102,8 +96,8 @@ namespace NeuralNetworks
         {
             for (int i = 0; i < inputSignals.Length; i++)
             {
-                var signal = new double[] { inputSignals[i] };
-                var neuron = Layers[0].Neurons[i];
+                double[] signal = new double[] { inputSignals[i] };
+                Neuron neuron = Layers[0].Neurons[i];
 
                 neuron.FeedForward(signal);
             }
@@ -111,14 +105,15 @@ namespace NeuralNetworks
 
         private void CreateOutputLayer()
         {
-            var outputNeurons = new List<Neuron>();
-            var lastLayer = Layers.Last();
+            Neuron[] outputNeurons = new Neuron[Topology.OutputsCount];
+            Layer lastLayer = Layers.Last();
+
             for (int i = 0; i < Topology.OutputsCount; i++)
             {
-                var neuron = new Neuron(lastLayer.NeuronCount, NeuronType.Output);
-                outputNeurons.Add(neuron);
+                outputNeurons[i] = new Neuron(lastLayer.NeuronCount, NeuronType.Output);
             }
-            var outputLayer = new Layer(outputNeurons.ToArray(), NeuronType.Output);
+
+            Layer outputLayer = new Layer(outputNeurons, NeuronType.Output);
             Layers.Add(outputLayer);
         }
 
@@ -126,27 +121,26 @@ namespace NeuralNetworks
         {
             for (int j = 0; j < Topology.HiddensLayers.Length; j++)
             {
-                var hiddenNeurons = new List<Neuron>();
-                var lastLayer = Layers.Last();
+                Layer lastLayer = Layers.Last();
+                Neuron[] hiddenNeurons = new Neuron[Topology.HiddensLayers[j]];
+
                 for (int i = 0; i < Topology.HiddensLayers[j]; i++)
                 {
-                    var neuron = new Neuron(lastLayer.NeuronCount);
-                    hiddenNeurons.Add(neuron);
+                    hiddenNeurons[i] = new Neuron(lastLayer.NeuronCount);
                 }
-                var hiddenLayer = new Layer(hiddenNeurons.ToArray());
+                Layer hiddenLayer = new Layer(hiddenNeurons);
                 Layers.Add(hiddenLayer);
             }
         }
 
-        private void CreateInputLayer()
+        private void CreateInputLayer(int countInputs = 1)
         {
-            var inputNeurons = new List<Neuron>();
+            Neuron[] inputNeurons = new Neuron[Topology.InputsCount];
             for (int i = 0; i < Topology.InputsCount; i++)
             {
-                var neuron = new Neuron(1, NeuronType.Input);
-                inputNeurons.Add(neuron);
+                inputNeurons[i] = new Neuron(countInputs, NeuronType.Input);
             }
-            var inputLayer = new Layer(inputNeurons.ToArray(), NeuronType.Input);
+            Layer inputLayer = new Layer(inputNeurons, NeuronType.Input);
             Layers.Add(inputLayer);
         }
         static void Main() { }

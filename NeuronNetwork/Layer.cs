@@ -2,7 +2,7 @@
 {
     public class Layer
     {
-        public Neuron[] Neurons { get; }
+        public Neuron[] Neurons { get; private set; }
         public int NeuronCount => Neurons?.Length ?? 0;
         public NeuronType ClassificationLayer;
 
@@ -19,7 +19,7 @@
             double [] signals = new double[Neurons.Length]; 
             for(int i = 0; i < Neurons.Length; i++)
             {
-                signals[i] = Neurons[i].Output;
+                signals[i] = Neurons[i].Outputs;
             }
             return signals;
         }

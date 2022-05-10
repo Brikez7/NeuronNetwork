@@ -42,14 +42,14 @@ namespace NeuralNetworks.Tests
                 new Tuple<double, double[]> (1, new double[] { 1, 1, 1, 1 })
             };
 
-            var topology = new TopologeNetwork(4, 1, 0.1, 2);
+            var topology = new TopologyNetwork(4, 1, 0.1, 2);
             var neuralNetwork = new NeuralNetwork(topology);
             var difference = neuralNetwork.Learn(dataset, 100000);
 
             var results = new List<double>();
             foreach (var data in dataset)
             {
-                var res = neuralNetwork.FeedForward(data.Item2).Output;
+                var res = neuralNetwork.FeedForward(data.Item2).Outputs;
                 results.Add(res);
             }
 

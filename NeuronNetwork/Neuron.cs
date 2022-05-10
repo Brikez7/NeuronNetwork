@@ -5,7 +5,7 @@
         public double[] Weights { get; private set; }
         public double[] Inputs { get; private set; }
         public NeuronType ClassificationNeuron { get; private set; }
-        public double Output { get; private set; }
+        public double Outputs { get; private set; }
         public double Delta { get; private set; }
 
         public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
@@ -42,14 +42,14 @@
 
             if (ClassificationNeuron != NeuronType.Input)
             {
-                Output = Sigmoid(sum);
+                Outputs = Sigmoid(sum);
             }
             else
             {
-                Output = sum;
+                Outputs = sum;
             }
 
-            return Output;
+            return Outputs;
         }
 
         private double Sigmoid(double x)
@@ -68,7 +68,7 @@
                 return;
             }
 
-            Delta = error * SigmoidDx(Output);
+            Delta = error * SigmoidDx(Outputs);
 
             for (int i = 0; i < Weights.Length; i++)
             {
@@ -77,6 +77,6 @@
         }
 
         public override string ToString()
-            => Output.ToString();
+            => Outputs.ToString();
     }
 }
