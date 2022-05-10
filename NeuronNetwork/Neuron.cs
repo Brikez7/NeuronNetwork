@@ -30,7 +30,7 @@
             }
         }
 
-        public double FeedForward(double[] inputSignals)
+        public double ProcessingSignals(double[] inputSignals)
         {
             Inputs = inputSignals;
 
