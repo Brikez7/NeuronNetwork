@@ -4,13 +4,13 @@
     {
         public double[] Weights { get; private set; }
         public double[] Inputs { get; private set; }
-        public NeuronType ClassificationNeuron { get; private set; }
+        private NeuronType _classificationNeuron { get;  }
         public double Outputs { get; private set; }
         public double Delta { get; private set; }
 
         public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
         {
-            ClassificationNeuron = type;
+            _classificationNeuron = type;
             Inputs = new double[inputCount];
             Weights = new double[inputCount];
 
@@ -19,7 +19,7 @@
 
         private void FillWeights(int inputCount)
         {
-            if (ClassificationNeuron == NeuronType.Input)
+            if (_classificationNeuron == NeuronType.Input)
             {
                 Weights =  Weights.Select(x => x = 1).ToArray();
             }
@@ -40,7 +40,7 @@
                 sum += Inputs[i] * Weights[i];
             }
 
-            if (ClassificationNeuron != NeuronType.Input)
+            if (_classificationNeuron != NeuronType.Input)
             {
                 Outputs = Sigmoid(sum);
             }
@@ -63,7 +63,7 @@
 
         public void Learn(double error, double learningRate)
         {
-            if (ClassificationNeuron == NeuronType.Input)
+            if (_classificationNeuron == NeuronType.Input)
             {
                 return;
             }

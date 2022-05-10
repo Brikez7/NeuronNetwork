@@ -4,7 +4,7 @@
     {
         public Neuron[] Neurons { get; private set; }
         public int NeuronCount => Neurons?.Length ?? 0;
-        public NeuronType ClassificationLayer;
+        private NeuronType ClassificationLayer { get; }
 
         public Layer(Neuron[] neurons, NeuronType type = NeuronType.Normal)
         {

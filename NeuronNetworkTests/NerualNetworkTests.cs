@@ -1,10 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NeuralNetworks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NeuralNetworks.Tests
 {
@@ -44,7 +40,7 @@ namespace NeuralNetworks.Tests
 
             var topology = new TopologyNetwork(4, 1, 0.1, 2);
             var neuralNetwork = new NeuralNetwork(topology);
-            var difference = neuralNetwork.Learn(dataset, 100000);
+            var difference = neuralNetwork.Learn(dataset, 100);
 
             var results = new List<double>();
             foreach (var data in dataset)
@@ -55,8 +51,8 @@ namespace NeuralNetworks.Tests
 
             for (int i = 0; i < results.Count; i++)
             {
-                var expected = Math.Round(dataset[i].Item1, 3);
-                var actual = Math.Round(results[i], 3);
+                double expected = Math.Round(dataset[i].Item1, 4);
+                double actual = Math.Round(results[i], 4);
                 Console.WriteLine(expected + " - " + actual);
             }
         }
