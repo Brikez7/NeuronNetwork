@@ -1,34 +1,31 @@
-﻿using System.Collections.Generic;
-
-namespace NeuralNetworks
+﻿namespace NeuralNetworks
 {
     public class Layer
     {
-        public List<Neuron> Neurons { get; }
-        public int NeuronCount => Neurons?.Count ?? 0;
-        public NeuronType Type;
+        public Neuron[] Neurons { get; }
+        public int NeuronCount => Neurons?.Length ?? 0;
+        public NeuronType ClassificationLayer;
 
-        public Layer(List<Neuron> neurons, NeuronType type = NeuronType.Normal)
+        public Layer(Neuron[] neurons, NeuronType type = NeuronType.Normal)
         {
             // TODO: проверить все входные нейроны на соответствие типу
 
             Neurons = neurons;
-            Type = type;
+            ClassificationLayer = type;
         }
 
-        public List<double> GetSignals()
+        public double[] GetSignals()
         {
-            var result = new List<double>();
-            foreach (var neuron in Neurons)
+            double [] signals = new double[Neurons.Length]; 
+            for(int i = 0; i < Neurons.Length; i++)
             {
-                result.Add(neuron.Output);
+                signals[i] = Neurons[i].Output;
             }
-            return result;
+            return signals;
         }
 
         public override string ToString()
-        {
-            return Type.ToString();
-        }
+            => ClassificationLayer.ToString();
+
     }
 }

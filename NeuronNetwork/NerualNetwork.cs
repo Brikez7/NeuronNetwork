@@ -118,7 +118,7 @@ namespace NeuralNetworks
                 var neuron = new Neuron(lastLayer.NeuronCount, NeuronType.Output);
                 outputNeurons.Add(neuron);
             }
-            var outputLayer = new Layer(outputNeurons, NeuronType.Output);
+            var outputLayer = new Layer(outputNeurons.ToArray(), NeuronType.Output);
             Layers.Add(outputLayer);
         }
 
@@ -133,7 +133,7 @@ namespace NeuralNetworks
                     var neuron = new Neuron(lastLayer.NeuronCount);
                     hiddenNeurons.Add(neuron);
                 }
-                var hiddenLayer = new Layer(hiddenNeurons);
+                var hiddenLayer = new Layer(hiddenNeurons.ToArray());
                 Layers.Add(hiddenLayer);
             }
         }
@@ -146,7 +146,7 @@ namespace NeuralNetworks
                 var neuron = new Neuron(1, NeuronType.Input);
                 inputNeurons.Add(neuron);
             }
-            var inputLayer = new Layer(inputNeurons, NeuronType.Input);
+            var inputLayer = new Layer(inputNeurons.ToArray(), NeuronType.Input);
             Layers.Add(inputLayer);
         }
         static void Main() { }

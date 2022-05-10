@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace NeuralNetworks
+﻿namespace NeuralNetworks
 {
     public class Neuron
     {
         public double[] Weights { get; private set; }
         public double[] Inputs { get; private set; }
-        public NeuronType Classification { get; private set; }
+        public NeuronType ClassificationNeuron { get; private set; }
         public double Output { get; private set; }
         public double Delta { get; private set; }
 
         public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
         {
-            Classification = type;
+            ClassificationNeuron = type;
             Inputs = new double[inputCount];
             Weights = new double[inputCount];
 
@@ -22,7 +19,7 @@ namespace NeuralNetworks
 
         private void FillWeights(int inputCount)
         {
-            if (Classification == NeuronType.Input)
+            if (ClassificationNeuron == NeuronType.Input)
             {
                 Weights =  Weights.Select(x => x = 1).ToArray();
             }
@@ -43,7 +40,7 @@ namespace NeuralNetworks
                 sum += Inputs[i] * Weights[i];
             }
 
-            if (Classification != NeuronType.Input)
+            if (ClassificationNeuron != NeuronType.Input)
             {
                 Output = Sigmoid(sum);
             }
@@ -66,7 +63,7 @@ namespace NeuralNetworks
 
         public void Learn(double error, double learningRate)
         {
-            if (Classification == NeuronType.Input)
+            if (ClassificationNeuron == NeuronType.Input)
             {
                 return;
             }
