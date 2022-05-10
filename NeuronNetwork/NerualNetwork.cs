@@ -2,8 +2,8 @@
 {
     public class NeuralNetwork
     {
-        public TopologyNetwork Topology { get; private set; }
-        public List<Layer> Layers { get; } = new List<Layer>();
+        private TopologyNetwork Topology { get; }
+        private List<Layer> Layers { get; } = new List<Layer>();
 
         public NeuralNetwork(TopologyNetwork topology)
         {
