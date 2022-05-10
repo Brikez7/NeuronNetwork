@@ -6,10 +6,10 @@ namespace NeuralNetworks
 {
     public class NeuralNetwork
     {
-        public Topolog Topology { get; }
+        public TopologeNetwork Topology { get; }
         public List<Layer> Layers { get; }
 
-        public NeuralNetwork(Topolog topology)
+        public NeuralNetwork(TopologeNetwork topology)
         {
             Topology = topology;
 
@@ -25,7 +25,7 @@ namespace NeuralNetworks
             SendSignalsToInputNeurons(inputSignals);
             FeedForwardAllLayersAfterInput();
 
-            if (Topology.OutputCount == 1)
+            if (Topology.OutputsCount == 1)
             {
                 return Layers.Last().Neurons[0];
             }
@@ -113,7 +113,7 @@ namespace NeuralNetworks
         {
             var outputNeurons = new List<Neuron>();
             var lastLayer = Layers.Last();
-            for (int i = 0; i < Topology.OutputCount; i++)
+            for (int i = 0; i < Topology.OutputsCount; i++)
             {
                 var neuron = new Neuron(lastLayer.NeuronCount, NeuronType.Output);
                 outputNeurons.Add(neuron);
@@ -124,11 +124,11 @@ namespace NeuralNetworks
 
         private void CreateHiddenLayers()
         {
-            for (int j = 0; j < Topology.HiddenLayers.Count; j++)
+            for (int j = 0; j < Topology.HiddensLayers.Length; j++)
             {
                 var hiddenNeurons = new List<Neuron>();
                 var lastLayer = Layers.Last();
-                for (int i = 0; i < Topology.HiddenLayers[j]; i++)
+                for (int i = 0; i < Topology.HiddensLayers[j]; i++)
                 {
                     var neuron = new Neuron(lastLayer.NeuronCount);
                     hiddenNeurons.Add(neuron);
@@ -141,7 +141,7 @@ namespace NeuralNetworks
         private void CreateInputLayer()
         {
             var inputNeurons = new List<Neuron>();
-            for (int i = 0; i < Topology.InputCount; i++)
+            for (int i = 0; i < Topology.InputsCount; i++)
             {
                 var neuron = new Neuron(1, NeuronType.Input);
                 inputNeurons.Add(neuron);

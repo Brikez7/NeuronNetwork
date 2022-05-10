@@ -42,7 +42,7 @@ namespace NeuralNetworks.Tests
                 new Tuple<double, double[]> (1, new double[] { 1, 1, 1, 1 })
             };
 
-            var topology = new Topolog(4, 1, 0.1, 2);
+            var topology = new TopologeNetwork(4, 1, 0.1, 2);
             var neuralNetwork = new NeuralNetwork(topology);
             var difference = neuralNetwork.Learn(dataset, 100000);
 
