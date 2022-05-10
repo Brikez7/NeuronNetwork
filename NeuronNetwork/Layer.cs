@@ -1,23 +1,29 @@
 ﻿namespace NeuralNetworks
 {
-    internal class Layer
+    public class Layer
     {
-        public Neuron[] Neurons { get; private set; }
-        public int Count => Neurons.Length;
-
-        public Layer(Neuron[] neurons,NeuronType Classification = NeuronType.Normal)
+        public Neuron[] Neurons { get; set; }
+        public int CountNeurons => Neurons.Length;
+        public NeuronType ClassificationLayer { get; private set; }
+        public Layer(Neuron[] neurons,NeuronType classificationLayer = NeuronType.Normal)
         {
             Neurons = neurons;
+            ClassificationLayer = classificationLayer;
         }
 
-        public List<double> GetSignalsAtNeurons() 
+        public double[] GetSignals() 
         {
-            List<double> SignalsNeurons = new List<double>();
+            double [] SignalsNeurons = new double[Neurons.Length];
             for (int i = 0; i < Neurons.Length; i++)
             {
-                SignalsNeurons.Add(Neurons[i].Output);
+                SignalsNeurons[i] = Neurons[i].Output;
             }
             return SignalsNeurons;
+        }
+
+        public NeuronType GetTypeLayer() 
+        {
+            return ClassificationLayer;
         }
     }
 }

@@ -1,45 +1,75 @@
 ﻿namespace NeuralNetworks
 {
-    class Neuron 
+    public class Neuron 
     {
-        private List<double> Weight { get; } = new List<double>();
+        public double[] Weight { get; private set; } 
+        private double[] InputsSignals { get; set; } 
         private NeuronType Classification { get;}
+        public double Delta { get; private set; }
         public double Output { get; private set; }
         public Neuron(int countWeight, NeuronType classification = NeuronType.Normal)
         {
             Classification = classification;
+            InputsSignals = new double[countWeight];
 
-            Completion(countWeight);
-        }
-        public void SetWieght(params double[] weights) 
-        {
-            // DOTO: deleate become add possibility learning network
-            for (int i = 0; i < weights.Length; i++)
-            {
-                weights[i] = Weight[i];
-            }
-        }
-        private void Completion(int countWeight) 
-        {
-            for (int i = 0; i < countWeight; i++)
-            {
-                Weight.Add(i);
-            }
+
+            Weight = new double[countWeight];
+            CompletionWeights(countWeight);
         }
 
-        public double ProcessingSignal(List<double> inputsSignal) 
+        private void CompletionWeights(int countWeight)
         {
+            if (Classification == NeuronType.input)
+            {
+                Weight = Weight.Select(x => x = 1).ToArray();
+            }
+            else
+            {
+                Random random = new Random();
+                Weight = Weight.Select(x => x = random.NextDouble()).ToArray();
+            }
+        }
+
+        public double ProcessingSignal(params double[] inputsSignals) 
+        {
+            InputsSignals = inputsSignals;
+
             double sum = 0.0;
-            for (int i = 0; i < inputsSignal.Count; i++)
+            for (int i = 0; i < inputsSignals.Length; i++)
             {
-                sum += inputsSignal[i] * Weight[i];
+                sum += InputsSignals[i] * Weight[i];
             }
-            Output = Sigmoid(sum);
-            return Sigmoid(sum);
+
+            if (Classification != NeuronType.input)
+            {
+                Output = Sigmoid(sum);
+            }
+            else 
+            {
+                Output = sum;
+            }
+            return Output;
         }
         private double Sigmoid(double x) =>
             1.0 / (1.0 + Math.Pow(Math.E, -x));
+        private double SigmoidDx(double x)
+        {
+            double sigmoid = Sigmoid(x);
+            return sigmoid / (1.0 - sigmoid); 
+        }
+        public void Learn(double error, double learningRate)
+        {
+            if (NeuronType.input == Classification)
+            {
+                return;
+            }
+
+            Delta = error * SigmoidDx(Output);
+            for (int i = 0; i < Weight.Length; i++)
+            {
+                Weight[i] = Weight[i] - InputsSignals[i] * Delta * learningRate;
+            }
+        }
         public override string ToString() => Output.ToString();
-        
     }
 }
