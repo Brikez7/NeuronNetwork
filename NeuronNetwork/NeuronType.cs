@@ -2,8 +2,8 @@
 {
     public enum NeuronType 
     {
-        input = 0,
+        Input = 0,
         Normal = 1,
-        output = 2,
+        Output = 2,
     }
 }
