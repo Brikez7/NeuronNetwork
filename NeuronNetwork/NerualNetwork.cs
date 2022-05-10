@@ -89,7 +89,7 @@ namespace NeuralNetworks
             for (int i = 1; i < Layers.Count; i++)
             {
                 var layer = Layers[i];
-                var previousLayerSingals = Layers[i - 1].GetSignals();
+                var previousLayerSingals = Layers[i - 1].GetSignals().ToArray();
 
                 foreach (var neuron in layer.Neurons)
                 {
@@ -102,7 +102,7 @@ namespace NeuralNetworks
         {
             for (int i = 0; i < inputSignals.Length; i++)
             {
-                var signal = new List<double>() { inputSignals[i] };
+                var signal = new double[] { inputSignals[i] };
                 var neuron = Layers[0].Neurons[i];
 
                 neuron.FeedForward(signal);

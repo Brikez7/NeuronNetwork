@@ -5,53 +5,45 @@ namespace NeuralNetworks
 {
     public class Neuron
     {
-        public List<double> Weights { get; }
-        public List<double> Inputs { get; }
-        public NeuronType NeuronType { get; }
+        public double[] Weights { get; private set; }
+        public double[] Inputs { get; private set; }
+        public NeuronType Classification { get; private set; }
         public double Output { get; private set; }
         public double Delta { get; private set; }
 
         public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
         {
-            NeuronType = type;
-            Weights = new List<double>();
-            Inputs = new List<double>();
+            Classification = type;
+            Inputs = new double[inputCount];
+            Weights = new double[inputCount];
 
-            InitWeightsRandomValue(inputCount);
+            FillWeights(inputCount);
         }
 
-        private void InitWeightsRandomValue(int inputCount)
+        private void FillWeights(int inputCount)
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < inputCount; i++)
+            if (Classification == NeuronType.Input)
             {
-                if (NeuronType == NeuronType.Input)
-                {
-                    Weights.Add(1);
-                }
-                else
-                {
-                    Weights.Add(rnd.NextDouble());
-                }
-                Inputs.Add(0);
+                Weights =  Weights.Select(x => x = 1).ToArray();
+            }
+            else
+            {
+                Random random = new Random();
+                Weights = Weights.Select(x => x = random.NextDouble()).ToArray();
             }
         }
 
-        public double FeedForward(List<double> inputs)
+        public double FeedForward(double[] inputSignals)
         {
-            for (int i = 0; i < inputs.Count; i++)
+            Inputs = inputSignals;
+
+            double sum = 0.0;
+            for (int i = 0; i < inputSignals.Length; i++)
             {
-                Inputs[i] = inputs[i];
+                sum += Inputs[i] * Weights[i];
             }
 
-            var sum = 0.0;
-            for (int i = 0; i < inputs.Count; i++)
-            {
-                sum += inputs[i] * Weights[i];
-            }
-
-            if (NeuronType != NeuronType.Input)
+            if (Classification != NeuronType.Input)
             {
                 Output = Sigmoid(sum);
             }
@@ -64,40 +56,30 @@ namespace NeuralNetworks
         }
 
         private double Sigmoid(double x)
-        {
-            var result = 1.0 / (1.0 + Math.Pow(Math.E, -x));
-            return result;
-        }
+            => 1.0 / (1.0 + Math.Pow(Math.E, -x));
 
         private double SigmoidDx(double x)
         {
-            var sigmoid = Sigmoid(x);
-            var result = sigmoid / (1 - sigmoid);
-            return result;
+            double sigmoid = Sigmoid(x);
+            return sigmoid / (1 - sigmoid);
         }
 
         public void Learn(double error, double learningRate)
         {
-            if (NeuronType == NeuronType.Input)
+            if (Classification == NeuronType.Input)
             {
                 return;
             }
 
             Delta = error * SigmoidDx(Output);
 
-            for (int i = 0; i < Weights.Count; i++)
+            for (int i = 0; i < Weights.Length; i++)
             {
-                var weight = Weights[i];
-                var input = Inputs[i];
-
-                var newWeigth = weight - input * Delta * learningRate;
-                Weights[i] = newWeigth;
+                Weights[i] = Weights[i] - Inputs[i] * Delta * learningRate;
             }
         }
 
         public override string ToString()
-        {
-            return Output.ToString();
-        }
+            => Output.ToString();
     }
 }
