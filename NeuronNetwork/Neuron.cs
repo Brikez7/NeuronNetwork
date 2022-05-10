@@ -1,75 +1,103 @@
-﻿namespace NeuralNetworks
+﻿using System;
+using System.Collections.Generic;
+
+namespace NeuralNetworks
 {
-    public class Neuron 
+    public class Neuron
     {
-        public double[] Weight { get; private set; } 
-        private double[] InputsSignals { get; set; } 
-        private NeuronType Classification { get;}
-        public double Delta { get; private set; }
+        public List<double> Weights { get; }
+        public List<double> Inputs { get; }
+        public NeuronType NeuronType { get; }
         public double Output { get; private set; }
-        public Neuron(int countWeight, NeuronType classification = NeuronType.Normal)
+        public double Delta { get; private set; }
+
+        public Neuron(int inputCount, NeuronType type = NeuronType.Normal)
         {
-            Classification = classification;
-            InputsSignals = new double[countWeight];
+            NeuronType = type;
+            Weights = new List<double>();
+            Inputs = new List<double>();
 
-
-            Weight = new double[countWeight];
-            CompletionWeights(countWeight);
+            InitWeightsRandomValue(inputCount);
         }
 
-        private void CompletionWeights(int countWeight)
+        private void InitWeightsRandomValue(int inputCount)
         {
-            if (Classification == NeuronType.input)
+            var rnd = new Random();
+
+            for (int i = 0; i < inputCount; i++)
             {
-                Weight = Weight.Select(x => x = 1).ToArray();
-            }
-            else
-            {
-                Random random = new Random();
-                Weight = Weight.Select(x => x = random.NextDouble()).ToArray();
+                if (NeuronType == NeuronType.Input)
+                {
+                    Weights.Add(1);
+                }
+                else
+                {
+                    Weights.Add(rnd.NextDouble());
+                }
+                Inputs.Add(0);
             }
         }
 
-        public double ProcessingSignal(params double[] inputsSignals) 
+        public double FeedForward(List<double> inputs)
         {
-            InputsSignals = inputsSignals;
-
-            double sum = 0.0;
-            for (int i = 0; i < inputsSignals.Length; i++)
+            for (int i = 0; i < inputs.Count; i++)
             {
-                sum += InputsSignals[i] * Weight[i];
+                Inputs[i] = inputs[i];
             }
 
-            if (Classification != NeuronType.input)
+            var sum = 0.0;
+            for (int i = 0; i < inputs.Count; i++)
+            {
+                sum += inputs[i] * Weights[i];
+            }
+
+            if (NeuronType != NeuronType.Input)
             {
                 Output = Sigmoid(sum);
             }
-            else 
+            else
             {
                 Output = sum;
             }
+
             return Output;
         }
-        private double Sigmoid(double x) =>
-            1.0 / (1.0 + Math.Pow(Math.E, -x));
+
+        private double Sigmoid(double x)
+        {
+            var result = 1.0 / (1.0 + Math.Pow(Math.E, -x));
+            return result;
+        }
+
         private double SigmoidDx(double x)
         {
-            double sigmoid = Sigmoid(x);
-            return sigmoid / (1.0 - sigmoid); 
+            var sigmoid = Sigmoid(x);
+            var result = sigmoid / (1 - sigmoid);
+            return result;
         }
+
         public void Learn(double error, double learningRate)
         {
-            if (NeuronType.input == Classification)
+            if (NeuronType == NeuronType.Input)
             {
                 return;
             }
 
             Delta = error * SigmoidDx(Output);
-            for (int i = 0; i < Weight.Length; i++)
+
+            for (int i = 0; i < Weights.Count; i++)
             {
-                Weight[i] = Weight[i] - InputsSignals[i] * Delta * learningRate;
+                var weight = Weights[i];
+                var input = Inputs[i];
+
+                var newWeigth = weight - input * Delta * learningRate;
+                Weights[i] = newWeigth;
             }
         }
-        public override string ToString() => Output.ToString();
+
+        public override string ToString()
+        {
+            return Output.ToString();
+        }
     }
 }

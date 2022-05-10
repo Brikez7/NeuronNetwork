@@ -2,16 +2,19 @@
 using NeuralNetworks;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace NeuralNetworks.Tests
 {
     [TestClass()]
-    public class NerualNetworkTests
+    public class NeuralNetworkTests
     {
         [TestMethod()]
         public void FeedForwardTest()
         {
-            List<Tuple<double, double[]>> dataSet = new List<Tuple<double, double[]>>()
+            var dataset = new List<Tuple<double, double[]>>
             {
                 // Результат - Пациент болен - 1
                 //             Пациент Здоров - 0
@@ -38,29 +41,23 @@ namespace NeuralNetworks.Tests
                 new Tuple<double, double[]> (1, new double[] { 1, 1, 1, 0 }),
                 new Tuple<double, double[]> (1, new double[] { 1, 1, 1, 1 })
             };
-            int inputNeurons = 4;
-            int outputNeurons = 1;
-            int[] hiddenNeurons = new int[] { 2 };
-            double errorRange = 0.01;
-            TopologeNetwork topologe = new TopologeNetwork(inputNeurons, outputNeurons, hiddenNeurons, errorRange);
-            NerualNetwork nerualNetwork = new NerualNetwork(topologe);
 
-            double differeneDataSet = nerualNetwork.Learn(dataSet , 100000);
-            
-            double[] results = new double[dataSet.Count];
+            var topology = new Topolog(4, 1, 0.1, 2);
+            var neuralNetwork = new NeuralNetwork(topology);
+            var difference = neuralNetwork.Learn(dataset, 100000);
 
-            for (int i = 0; i < results.Length; i++) 
+            var results = new List<double>();
+            foreach (var data in dataset)
             {
-                results[i] = nerualNetwork.FeedForward(dataSet[i].Item2).Output;
+                var res = neuralNetwork.FeedForward(data.Item2).Output;
+                results.Add(res);
             }
 
-            Console.WriteLine(differeneDataSet);
-            for (int i = 0; i < results.Length; i++)
+            for (int i = 0; i < results.Count; i++)
             {
-                double expected = Math.Round(dataSet[i].Item1,4);
-                double expected2 = Math.Round(results[i], 4);
-                Console.WriteLine("это "+ expected2 + " должно быть ровно этому"+ expected);
-                //Assert.AreEqual(expected, expected);
+                var expected = Math.Round(dataset[i].Item1, 3);
+                var actual = Math.Round(results[i], 3);
+                Console.WriteLine(expected + " - " + actual);
             }
         }
     }

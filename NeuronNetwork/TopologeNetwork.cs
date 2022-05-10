@@ -1,17 +1,21 @@
-﻿namespace NeuralNetworks
+﻿using System.Collections.Generic;
+
+namespace NeuralNetworks
 {
-    public class TopologeNetwork
+    public class Topolog
     {
-        public int CountInputs { get; private set; }
-        public int CountOutputs { get; private set; }
-        public int[] HiddingLayers { get; private set; }
-        public double LearningRate { get; private set; }
-        public TopologeNetwork(int countInputs, int countOutputs, int[] hiddingLayers, double errorRange)
+        public int InputCount { get; }
+        public int OutputCount { get; }
+        public double LearningRate { get; }
+        public List<int> HiddenLayers { get; }
+
+        public Topolog(int inputCount, int outputCount, double learningRate, params int[] layers)
         {
-            CountInputs = countInputs;
-            CountOutputs = countOutputs;
-            HiddingLayers = hiddingLayers;
-            LearningRate = errorRange;
+            InputCount = inputCount;
+            OutputCount = outputCount;
+            LearningRate = learningRate;
+            HiddenLayers = new List<int>();
+            HiddenLayers.AddRange(layers);
         }
     }
 }
